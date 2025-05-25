@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -22,11 +23,11 @@ public class GameScreen {
     private SpriteBatch batch;
     private Stage stage;
     private BitmapFont font24;
-    private Map map;
+    private GameMap map;
     private ItemsEmitter itemsEmitter;
     private TextEmitter textEmitter;
     private Hero hero;
-    private Camera camera;
+    private OrthographicCamera camera;
 
 //    private Music music;
 //    private Sound sound;
@@ -43,7 +44,7 @@ public class GameScreen {
         return allMonsters;
     }
 
-    public Map getMap() {
+    public GameMap getMap() {
         return map;
     }
 
@@ -59,13 +60,8 @@ public class GameScreen {
         this.batch = batch;
     }
 
-    public Camera getCamera() {
-        return camera;
-    }
-
     public void create() {
-        map = new Map();
-        camera = new Camera(1280, 720);
+        map = new GameMap();
         allCharacters = new ArrayList<>();
         allMonsters = new ArrayList<>();
         hero = new Hero(this);
@@ -123,6 +119,8 @@ public class GameScreen {
                 return (int) (o2.getPosition().y - o1.getPosition().y);
             }
         };
+        camera = new OrthographicCamera();
+        camera.setToOrtho(false, 1280, 720);
 
 //        music = Gdx.audio.newMusic(Gdx.files.internal("music.mp3"));
 //        music.setLooping(true);
@@ -135,11 +133,13 @@ public class GameScreen {
     public void render() {
         float dt = Gdx.graphics.getDeltaTime();
         update(dt);
-        camera.update(hero.getPosition().x, hero.getPosition().y);
         Gdx.gl.glClearColor(0, 0f, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        camera.position.set(hero.getPosition().x, hero.getPosition().y, 0);
+        camera.update();
+        batch.setProjectionMatrix(camera.combined);
         batch.begin();
-        map.render(batch, camera);;
+        map.render(batch);
         Collections.sort(allCharacters, drawOrderComparator);
         for (int i = 0; i < allCharacters.size(); i++) {
             allCharacters.get(i).render(batch, font24);
@@ -163,7 +163,6 @@ public class GameScreen {
             for (int i = 0; i < allCharacters.size(); i++) {
                 allCharacters.get(i).update(dt);
             }
-            camera.update(hero.getPosition().x, hero.getPosition().y);
             for (int i = 0; i < allMonsters.size(); i++) {
                 Monster currentsMonster = allMonsters.get(i);
                 if (!currentsMonster.isAlive()) {
