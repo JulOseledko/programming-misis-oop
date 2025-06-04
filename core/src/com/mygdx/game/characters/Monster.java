@@ -62,6 +62,5 @@ public class Monster extends GameCharacter {
                 gameScreen.getHero().takeDamage(weapon.getDamage());
             }
         }
-        checkScreenBounds();
     }
 }

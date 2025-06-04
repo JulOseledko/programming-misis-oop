@@ -21,7 +21,7 @@ public class Hero extends GameCharacter {
 
     public Hero(GameScreen gameScreen) {
         this.gameScreen = gameScreen;
-        this.name = "Alexander";
+        this.name = "Jul";
         this.level = 1;
         this.texture = new Texture("Knight_anim.png");
         this.regions = new TextureRegion(texture).split(80, 80)[0];
@@ -45,10 +45,6 @@ public class Hero extends GameCharacter {
                 .append("Exp: ").append(exp).append(" / ").append(expTo[level + 1]).append('\n')
                 .append("Coins: ").append(coins);
         font24.draw(batch, stringHelper, 20, 700);
-    }
-    @Override
-    public void render(SpriteBatch batch, BitmapFont font24) {
-        super.render(batch, font24);
     }
 
     @Override
@@ -91,9 +87,8 @@ public class Hero extends GameCharacter {
         if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
             direction.y = -1.0f;
         }
-
         moveForward(dt);
-        checkScreenBounds();
+        // checkScreenBounds();
     }
 
     public void killMonster(Monster monster) {

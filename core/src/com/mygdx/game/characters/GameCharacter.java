@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.GameScreen;
-import com.mygdx.game.Map;
 import com.mygdx.game.Weapon;
 
 public abstract class GameCharacter {
@@ -65,21 +64,6 @@ public abstract class GameCharacter {
         font24.draw(batch, stringHelper, position.x - 40, position.y + 80 - 22 + (int) (Math.sin(animationTimer * 10) * 15 * damageEffectTimer), 80, 1, false);
     }
 
-    public void checkScreenBounds() {
-        if (position.x < 0) {
-            position.x = Map.WORLD_WIDTH + position.x; // Зацикливание по X
-        } else if (position.x > Map.WORLD_WIDTH) {
-            position.x = position.x - Map.WORLD_WIDTH; // Зацикливание по X
-        }
-
-        if (position.y < 0) {
-            position.y = Map.WORLD_HEIGHT + position.y; // Зацикливание по Y
-        } else if (position.y > Map.WORLD_HEIGHT) {
-            position.y = position.y - Map.WORLD_HEIGHT; // Зацикливание по Y
-        }
-    }
-
-
     public void takeDamage(float amount) {
         hp -= amount;
         damageEffectTimer += 0.5f;
@@ -89,21 +73,13 @@ public abstract class GameCharacter {
     }
 
     public void moveForward(float dt) {
-        Vector2 nextPosition = new Vector2(position).mulAdd(direction, speed * dt);
-
-        if (gameScreen.getMap().isCellPassable(nextPosition)) {
-            position.set(nextPosition);
-        } else {
-            // Попытка скорректировать движение (избегаем застревания)
-            Vector2 tempX = new Vector2(nextPosition.x, position.y);
-            Vector2 tempY = new Vector2(position.x, nextPosition.y);
-
-            if (gameScreen.getMap().isCellPassable(tempX)) {
-                position.set(tempX);
-            } else if (gameScreen.getMap().isCellPassable(tempY)) {
-                position.set(tempY);
-            }
-        }
-        checkScreenBounds(); // Проверка границ после перемещения
+        /* if (gameScreen.getMap().isCellPassable(temp.set(position).mulAdd(direction, speed * dt))) {
+            position.set(temp);
+        } else if (gameScreen.getMap().isCellPassable(temp.set(position).mulAdd(direction, speed * dt).set(temp.x, position.y))) {
+            position.set(temp);
+        } else if (gameScreen.getMap().isCellPassable(temp.set(position).mulAdd(direction, speed * dt).set(position.x, temp.y))) {
+            position.set(temp);
+        } */
+        position.add(direction.scl(speed * dt));
     }
 }
