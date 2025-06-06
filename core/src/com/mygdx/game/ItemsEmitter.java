@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 
-public class ItemsEmitter {
+public class ItemsEmitter extends FlyingText {
     private Item[] items;
     private Texture texture;
     private TextureRegion[] regions;
